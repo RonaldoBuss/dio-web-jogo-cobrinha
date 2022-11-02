@@ -1,3 +1,16 @@
+let escolha = Number(prompt('Digite um número para a velocidade do jogo: 1=rapida, 2=normal'));;
+if (escolha == 1) {
+	velocidade = 100
+	alert('ok, o jogo será na velocidade rápida(1)')	
+}
+else if (escolha == 2) {
+	velocidade = 200
+	alert('ok, o jogo será na velocidade normal(2)')
+}
+else{
+    velocidade = 200
+	alert('Número diferente digitado, a velocidade será normal')	
+}
 let canvas = document.getElementById("snake"); //criar elemento que irá rodar o jogo
 let context = canvas.getContext("2d"); //....
 let box = 32;
@@ -11,6 +24,7 @@ let food ={
     x: Math.floor(Math.random() * 15 + 1) * box,
     y: Math.floor(Math.random() * 15 + 1) * box
 }
+let foodqtd = 0;
 
 function criarBG(){
     context.fillStyle = "lightgreen";
@@ -41,15 +55,15 @@ function update(event){
 
 function iniciarJogo(){    
 
-    if(snake[0].x > 15*box && direction == "right") snake[0].x = 0;
-    if(snake[0].x < 0 && direction == 'left') snake[0].x = 16 * box;
-    if(snake[0].y > 15*box && direction == "down") snake[0].y = 0;
-    if(snake[0].y < 0 && direction == 'up') snake[0].y = 16 * box;
-    
+    if((snake[0].x > 15*box && direction == "right") || snake[0].x > 15*box) snake[0].x = 0;
+    if((snake[0].x < 0 && direction == 'left') || snake[0].x < 0) snake[0].x = 15 * box;
+    if((snake[0].y > 15*box && direction == "down") || snake[0].y > 15*box) snake[0].y = 0;
+    if((snake[0].y < 0 && direction == 'up') || snake[0].y < 0) snake[0].y = 15 * box;
+
     for(i = 1; i < snake.length; i++){
         if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
             clearInterval(jogo);
-            alert('Game Over :(');
+            alert('Game Over:' + foodqtd + ' pontos!');
         }
     }
 
@@ -62,7 +76,7 @@ function iniciarJogo(){
 
     if(direction == "right") snakeX += box;
     if(direction == "left") snakeX -= box;
-    if (direction == "up") snakeY -= box;
+    if(direction == "up") snakeY -= box;
     if(direction == "down") snakeY += box;
 
     if(snakeX != food.x || snakeY != food.y){
@@ -70,6 +84,7 @@ function iniciarJogo(){
     }else{
         food.x = Math.floor(Math.random() * 15 +1) * box;
         food.y = Math.floor(Math.random() * 15 +1) * box;
+        foodqtd ++;      
     }
     
     let newHead ={
@@ -78,6 +93,7 @@ function iniciarJogo(){
     }
 
     snake.unshift(newHead); //método unshift adiciona como primeiro quadradinho da cobrinha
+
 }
 
-let jogo = setInterval(iniciarJogo, 100);
+let jogo = setInterval(iniciarJogo, velocidade);
